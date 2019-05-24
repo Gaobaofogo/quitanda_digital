@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Cadastrar Produto</h1>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <form method='POST'>
+      {% csrf_token %}
+
+      {% if success %}
+        <p>Produto cadastrado com sucesso</p>
+      {% endif %}
+      
+      {% if form.subject.errors %}
+      <ul>
+          {% for error in form.subject.errors %}
+          <li><strong>{{ error|escape }}</strong></li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      
+      {% for field in form %}
+        <div class="form-group">
+          <label for="exampleInputEmail1">{{ field.label }}</label>
+          {% render_field field class="form-control" %}
+          <small id="emailHelp" class="form-text text-muted"></small>
+        </div>
+      {% endfor %}
+      
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
