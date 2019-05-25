@@ -1,7 +1,10 @@
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
-from .forms import UserAddForm
+from .forms import LoginForm, UserAddForm
 from .models import Employee
 
 
@@ -19,8 +22,10 @@ def user_add(request):
         form = UserAddForm(request.POST)
 
         if form.is_valid():
-            user = User.objects.create(username=form.cleaned_data['username'],
-                                       password=form.cleaned_data['password'])
+            user = User(username=form.cleaned_data['username'])
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+
             employee = Employee.objects.create(
                 user=user, office=form.cleaned_data['office'])
             user.employee = employee
@@ -31,3 +36,27 @@ def user_add(request):
     context['form'] = form
 
     return render(request, 'user/user_add.html', context)
+
+
+def login(request):
+    login_form = LoginForm()
+    context = {}
+
+    if request.method == 'POST':
+        login_form = LoginForm(request.POST)
+
+        if login_form.is_valid():
+            user = authenticate(request,
+                                username=request.POST['username'],
+                                password=request.POST['password'])
+
+            if user is not None:
+                auth_login(request, user)
+
+                return redirect(reverse('home'))
+            else:
+                context['user_not_exist'] = True
+
+    context['login_form'] = login_form
+
+    return render(request, 'user/login.html', context)
