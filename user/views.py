@@ -1,19 +1,25 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.models import User
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .forms import LoginForm, UserAddForm
 from .models import Employee
+from .utils import createUserAndGivesHimAGroup
 
 
+@login_required
+@permission_required('user.view_employee')
 def user_list(request):
     employees = Employee.objects.all().prefetch_related('user')
 
     return render(request, 'user/user_list.html', {'employees': employees})
 
 
+@login_required
+@permission_required('user.add_employee')
 def user_add(request):
     form = UserAddForm()
     context = {}
@@ -22,15 +28,7 @@ def user_add(request):
         form = UserAddForm(request.POST)
 
         if form.is_valid():
-            user = User(username=form.cleaned_data['username'])
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-
-            employee = Employee.objects.create(
-                user=user, office=form.cleaned_data['office'])
-            user.employee = employee
-            user.save()
-
+            createUserAndGivesHimAGroup(form)
             context['success'] = True
 
     context['form'] = form
@@ -52,6 +50,10 @@ def login(request):
 
             if user is not None:
                 auth_login(request, user)
+                next = request.GET.get('next', '')
+
+                if next:
+                    return redirect(next)
 
                 return redirect(reverse('home'))
             else:
@@ -60,3 +62,9 @@ def login(request):
     context['login_form'] = login_form
 
     return render(request, 'user/login.html', context)
+
+
+def logout(request):
+    auth_logout(request)
+
+    return redirect(reverse('login'))
