@@ -15,23 +15,20 @@
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Quantidade</th>
-            <th>Preço</th>
+            <th>Cargo</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
             <th>Nome</th>
-            <th>Quantidade</th>
-            <th>Preço</th>
+            <th>Cargo</th>
           </tr>
         </tfoot>
         <tbody>
-          {% for product in products %}
+          {% for employee in employees %}
           <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.quantity }}</td>
-            <td>{{ product.price }}</td>
+            <td>{{ employee.user }}</td>
+            <td>{{ employee.office }}</td>
           </tr>
           {% endfor %}
         </tbody>
