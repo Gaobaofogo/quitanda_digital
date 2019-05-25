@@ -13,7 +13,11 @@ from .utils import createUserAndGivesHimAGroup
 @login_required
 @permission_required('user.view_employee')
 def user_list(request):
-    employees = Employee.objects.all().prefetch_related('user')
+    if request.user.has_perm('user.superadmin'):
+        employees = Employee.objects.all().prefetch_related('user')
+    else:
+        employees = Employee.objects.filter(
+            office='Funcionário').prefetch_related('user')
 
     return render(request, 'user/user_list.html', {'employees': employees})
 
