@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from .forms import LoginForm, UserAddForm
 from .models import Employee
-from .utils import createUserAndGivesHimAGroup
+from .utils import createEmployee, giveAGroupToEmployee
 
 
 @login_required
@@ -32,7 +32,10 @@ def user_add(request):
         form = UserAddForm(request.POST)
 
         if form.is_valid():
-            createUserAndGivesHimAGroup(form)
+            form_data = form.cleaned_data.copy()
+
+            createEmployee(form_data)
+
             context['success'] = True
 
     context['form'] = form
