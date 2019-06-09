@@ -14,6 +14,8 @@ def createEmployee(form_data):
 
     giveAGroupToEmployee(user, form_data['office'])
 
+    return user
+
 
 def giveAGroupToEmployee(user, office):
     manager_group = Group.objects.get(name=office)
