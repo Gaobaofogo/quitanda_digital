@@ -1,0 +1,14 @@
+User authenticate/login:
+
+- https://docs.djangoproject.com/en/2.2/topics/auth/default/
+
+
+User authenticate/login in foruns:
+
+- https://stackoverflow.com/questions/7367509/login-in-django-testing-framework
+
+
+Permissions:
+
+- https://docs.djangoproject.com/en/dev/topics/auth/default/#permissions-and-authorization
+- https://www.vinta.com.br/blog/2016/controlling-access-a-django-permission-apps-comparison/
